@@ -3,6 +3,7 @@ package com.example.dell.smartgarden;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
@@ -11,6 +12,7 @@ import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import java.io.UnsupportedEncodingException;
 
@@ -32,22 +34,22 @@ public class PahoMqttClient {
     public MqttAndroidClient getMqttClient(Context context, String brokerUrl, String clientId) {
 
         mqttAndroidClient = new MqttAndroidClient(context, brokerUrl, clientId);
-
+        MqttConnectOptions connOpts;
         try {
-            MqttConnectOptions connOpts = new MqttConnectOptions();
+            connOpts = new MqttConnectOptions();
             connOpts.setCleanSession(false);
             connOpts.setAutomaticReconnect(true);
             connOpts.setKeepAliveInterval(9000);
             connOpts.setUserName(MQTT_USERNAME);
             connOpts.setPassword(MQTT_PASSWORD.toCharArray());
+
             IMqttToken token = mqttAndroidClient.connect(connOpts);
 
             token.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    // mqttAndroidClient.setBufferOpts(getDisconnectedBufferOptions());
-                    Log.d(TAG, "Success");
-                    //subscribe();
+                    Log.d(TAG, "Successfuly connected");
+                    subscribe();
                     // Sub(mqttAndroidClient, SUBSCRIBE_TOPIC_HUMIDITY, 1);
 
                     // try {
@@ -55,20 +57,24 @@ public class PahoMqttClient {
                     //  } catch (MqttException e) {
                     // e.printStackTrace();
                     //}
+                    mqttAndroidClient.setBufferOpts(getDisconnectedBufferOptions());
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    Log.d(TAG, "Failure " + exception.toString());
+                    Log.d(TAG, "Failure  to connect" + exception.toString());
+
+
                 }
             });
 
-        } catch (MqttException e) {
-            e.printStackTrace();
+        } catch (MqttException ex) {
+            ex.printStackTrace();
         }
 
-        return mqttAndroidClient;
-    }
+            return mqttAndroidClient;
+        }
+
 
     public void disconnect(@NonNull MqttAndroidClient client) throws MqttException {
         IMqttToken mqttToken = client.disconnect();
@@ -156,7 +162,7 @@ public class PahoMqttClient {
     public void subscribe(){
         try{
             mqttAndroidClient.subscribe(SUBSCRIBE_TOPIC_LIGHT_SENSOR,QOS);
-            Log.d(TAG, "Subscribe Successfully to " + SUBSCRIBE_TOPIC_LIGHT_SENSOR);
+            //Log.d(TAG, "Subscribe Successfully to " + SUBSCRIBE_TOPIC_LIGHT_SENSOR);
             mqttAndroidClient.subscribe(SUBSCRIBE_TOPIC_WATER_LEVEL,QOS);
             mqttAndroidClient.subscribe(SUBSCRIBE_TOPIC_SOILMOISTURE,QOS);
             mqttAndroidClient.subscribe(SUBSCRIBE_TOPIC_TEMPERTURE,QOS);
@@ -167,4 +173,8 @@ public class PahoMqttClient {
         }
 
     }
+
+
+
 }
+

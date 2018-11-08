@@ -7,7 +7,8 @@ public class Constants {
     public static final String MQTT_PASSWORD = "SJhy-SHxd0tH";
     public static final int QOS = 2;
     //Topics
-    public static final String PUBLISH_TOPIC_FAN = "Actuators/Fan";
+    public static final String PUBLISH_TOPIC_LEFT_FAN = "Actuators/LeftFan";
+    public static final String PUBLISH_TOPIC_RIGHT_FAN = "Actuators/RightFan";
     public static final String PUBLISH_TOPIC_PUMP = "Actuators/Pump";
     public static final String PUBLISH_TOPIC_LIGHT = "Actuators/Light";
 

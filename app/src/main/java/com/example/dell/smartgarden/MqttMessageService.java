@@ -12,11 +12,17 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+
+import static com.example.dell.smartgarden.Constants.SUBSCRIBE_TOPIC_HUMIDITY;
+import static com.example.dell.smartgarden.Constants.SUBSCRIBE_TOPIC_SOILMOISTURE;
+import static com.example.dell.smartgarden.Constants.SUBSCRIBE_TOPIC_TEMPERTURE;
+import static com.example.dell.smartgarden.Constants.SUBSCRIBE_TOPIC_WATER_LEVEL;
 
 public class MqttMessageService extends Service {
 
@@ -28,8 +34,8 @@ public class MqttMessageService extends Service {
 
     //private final Handler handler = new Handler();
     private Intent intent = null;
-
-
+    int messageInt;
+String message;
 
     public MqttMessageService() {
     }
@@ -52,6 +58,7 @@ public class MqttMessageService extends Service {
             @Override
             public void connectComplete(boolean b, String s) {
 
+
             }
 
             @Override
@@ -61,11 +68,39 @@ public class MqttMessageService extends Service {
 
             @Override
             public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
-                setMessageNotification(s, new String(mqttMessage.getPayload()));
-                Log.d(TAG, "massege recived");
+
+                messageInt = Integer.valueOf(mqttMessage.toString());
+                switch (s) {
+                    case SUBSCRIBE_TOPIC_SOILMOISTURE: {
+                        if (messageInt < 60) {
+                               setMessageNotification(s, "Seems like your plants are dry! What's about watering them?");
+                            //message = "Seems like your plants are dry! What's about watering them?";
+                            Log.d(TAG, "massege recived");
+                        }
+                    }
+                    break;
+                    case SUBSCRIBE_TOPIC_TEMPERTURE: {
+                        if (messageInt > 40) {
+                             setMessageNotification(s, "Tempreture degree is High! What's about turning the fans on? ");
+                            Log.d(TAG, "massege recived");
+
+                            break;
+                        }
+                    }
+                    case SUBSCRIBE_TOPIC_WATER_LEVEL: {
+                        if (messageInt < 30) {
+                            setMessageNotification(s, "Water in the tank is almost finshed!");
+                            Log.d(TAG, "massege recived");
+                            break;
+                        }
+                    }
 
 
+                    //setMessageNotification(" ", message);
+                    //Log.d(TAG, "massege recived");
 
+
+                }
             }
 
             @Override

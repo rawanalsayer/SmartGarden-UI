@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -32,7 +33,7 @@ public class SensorsFragment extends Fragment{
     View view;
 
     private MqttAndroidClient client;
-    private String TAG = "MainActivity";
+    private String TAG = "SensorsFragment";
     private PahoMqttClient pahoMqttClient;
     private SeekBar SeekBarWater;
     private Handler seekBarHandler;
@@ -45,7 +46,7 @@ public class SensorsFragment extends Fragment{
     String value;
 
 
-    SharedPreferences.Editor editor;
+     SharedPreferences.Editor editor;
 
      SharedPreferences test_name;
 
@@ -122,6 +123,8 @@ public class SensorsFragment extends Fragment{
 
             @Override
             public void connectionLost(Throwable cause) {
+
+
 
             }
 

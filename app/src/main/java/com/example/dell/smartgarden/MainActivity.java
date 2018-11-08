@@ -1,6 +1,7 @@
 package com.example.dell.smartgarden;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,7 +14,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 
@@ -51,6 +54,7 @@ public class MainActivity extends AppCompatActivity  implements BottomNavigation
         pahoMqttClient = new PahoMqttClient();
         client = pahoMqttClient.getMqttClient(getApplicationContext(), Constants.MQTT_BROKER_URL, Constants.CLIENT_ID);
         client.setTraceEnabled(true);
+
 
         Intent intent = new Intent(MainActivity.this, MqttMessageService.class);
         ContextCompat.startForegroundService(MainActivity.this, intent  );
